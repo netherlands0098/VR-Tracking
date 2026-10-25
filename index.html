@@ -4276,6 +4276,7 @@ recordButton.addEventListener(
 
 
 async function iniciar() {
+    let etapaDiagnostico = { valor: "preparação" };
 
 
     try {
@@ -4285,10 +4286,12 @@ async function iniciar() {
             "💾 Iniciando banco...";
 
 
+        etapaDiagnostico.valor = "banco de dados";
         await storage.init();
         console.log("✅ DEBUG: storage.init terminou");
 
 
+        etapaDiagnostico.valor = "biblioteca de gestos";
         await atualizarBiblioteca();
 
 
@@ -4296,6 +4299,7 @@ async function iniciar() {
             "🧠 Carregando reconhecedor...";
 
 
+        etapaDiagnostico.valor = "reconhecedor";
         await recognizer.load();
 
 
@@ -4303,6 +4307,7 @@ async function iniciar() {
             "🧠 Carregando MediaPipe...";
 
 
+        etapaDiagnostico.valor = "inicialização do MediaPipe";
         await tracking.init();
         console.log("✅ DEBUG: tracking.init terminou");
 
@@ -4311,6 +4316,7 @@ async function iniciar() {
             "📷 Ligando câmera...";
 
 
+        etapaDiagnostico.valor = "inicialização da câmera";
         await tracking.startCamera();
 
 
@@ -4321,6 +4327,11 @@ async function iniciar() {
 
 
     catch (erro) {
+        console.error("Etapa que falhou:", etapaDiagnostico.valor);
+        console.error("Erro completo:", erro);
+        console.error("Tipo de evento:", erro?.type);
+        console.error("Alvo do evento:", erro?.target);
+
 
 
         console.error(
