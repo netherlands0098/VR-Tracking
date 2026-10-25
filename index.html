@@ -4329,9 +4329,14 @@ async function iniciar() {
         );
 
 
-        status.textContent =
-            "❌ Erro: " +
-            erro.message;
+        const mensagemErro = erro instanceof Error
+            ? `${erro.name}: ${erro.message}`
+            : (typeof erro === "string" ? erro : String(erro));
+
+        status.textContent = "❌ Erro: " + mensagemErro;
+
+        console.error("Tipo do erro:", typeof erro);
+        console.error("Detalhes completos:", erro);
 
     }
 
