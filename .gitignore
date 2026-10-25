@@ -1,0 +1,50 @@
+# Dependências instaladas localmente
+node_modules/
+
+# Backups e versões antigas
+*.backup
+*.backup_*
+*.antes*
+*.erro
+*.save
+*.block*_backup
+*.bloco*_backup
+*.compare_backup
+*.debug_backup
+*.deviation_map_backup
+*.finger_diagnosis_backup
+*.highlight*_backup
+*.landmarks_backup
+*.point_compare_backup
+*.sample_manager_backup
+*.sampleclick_backup
+*.selection_backup
+*.smart_*_backup
+*.summary_backup
+
+# Arquivos temporários de verificação
+vr-check.js
+vr-check.mjs
+
+# Configurações locais e segredos
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+*.log
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Versões antigas dos arquivos principais
+/index.html.*
+/js/quality.js.*
+
+# Ferramentas de manutenção usadas durante o desenvolvimento
+/upgrade_allin.py
+
+# Cópia WASM da raiz: não usada pelas referências atuais
+/wasm/

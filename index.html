@@ -1,0 +1,5444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Gesture Studio</title>
+
+    <link
+        rel="stylesheet"
+        href="./css/style.css">
+
+
+<style>
+
+.sampleItem {
+    cursor: pointer;
+    padding: 8px;
+    margin: 3px 0;
+    border-radius: 8px;
+}
+
+.sampleItem.selected {
+    outline: 2px solid currentColor;
+    font-weight: bold;
+    transform: scale(1.02);
+}
+
+
+
+/* =====================================
+   ABAS DO EDITOR DE GESTOS
+   ===================================== */
+
+.editor-tabs {
+    display: flex;
+    gap: 6px;
+    margin: 12px 0;
+    padding: 4px;
+    background: #080808;
+    border: 1px solid #222;
+    border-radius: 10px;
+}
+
+.editor-tab {
+    flex: 1;
+    padding: 10px 8px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #aaa;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.editor-tab:hover {
+    background: #171717;
+    color: #fff;
+}
+
+.editor-tab.active {
+    background: #252525;
+    color: #fff;
+}
+
+.editor-tab-content {
+    display: none;
+}
+
+.editor-tab-content.active {
+    display: block;
+}
+
+
+/* =====================================
+   MODAL DE VISUALIZAÇÃO DA AMOSTRA
+   ===================================== */
+
+.sample-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sample-modal.active {
+    display: flex;
+}
+
+.sample-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: #181818;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.sample-modal-content {
+    width: 100%;
+    max-width: 700px;
+    max-height: 100%;
+    overflow-y: auto;
+text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+}
+
+.sample-modal-title {
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.sample-modal canvas {
+    width: min(90vw, 600px);
+    height: min(90vw, 600px);
+    max-width: 600px;
+    max-height: 600px;
+    background: #050505;
+    border-radius: 16px;
+}
+
+.sample-modal-info {
+    margin-top: 15px;
+    color: #ddd;
+    text-align: left;
+}
+
+
+/* ============================================================
+   ALL-IN UPGRADE
+   ============================================================ */
+
+.allin-quality-card {
+    margin-top: 14px;
+    padding: 14px;
+    background: #0d0d0d;
+    border: 1px solid #252525;
+    border-radius: 12px;
+}
+
+.allin-quality-bar {
+    width: 100%;
+    height: 9px;
+    margin-top: 9px;
+    background: #222;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.allin-quality-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: #44dd66;
+    transition: width 0.3s ease;
+}
+
+.allin-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.allin-stat {
+    padding: 10px;
+    background: #151515;
+    border: 1px solid #242424;
+    border-radius: 9px;
+    font-size: 13px;
+    color: #ccc;
+}
+
+.allin-stat strong {
+    display: block;
+    margin-top: 3px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.allin-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.allin-action-grid button {
+    min-height: 42px;
+}
+
+.allin-sample-extra {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.allin-suspect {
+    color: #ff5555;
+}
+
+.allin-warning {
+    color: #ffaa00;
+}
+
+.allin-good {
+    color: #44dd66;
+}
+
+.allin-nav {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.allin-nav button {
+    min-width: 110px;
+}
+
+.allin-landmark-box {
+    margin-top: 10px;
+    padding: 10px;
+    background: #111;
+    border: 1px solid #252525;
+    border-radius: 9px;
+    color: #ccc;
+    font-size: 13px;
+}
+
+@media (max-width: 420px) {
+    .allin-stat-grid,
+    .allin-action-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ============================================================
+   ALL-IN UPGRADE
+   ============================================================ */
+
+.allin-quality-card {
+    margin-top: 14px;
+    padding: 14px;
+    background: #0d0d0d;
+    border: 1px solid #252525;
+    border-radius: 12px;
+}
+
+.allin-quality-bar {
+    width: 100%;
+    height: 9px;
+    margin-top: 9px;
+    background: #222;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.allin-quality-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: #44dd66;
+    transition: width 0.3s ease;
+}
+
+.allin-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.allin-stat {
+    padding: 10px;
+    background: #151515;
+    border: 1px solid #242424;
+    border-radius: 9px;
+    font-size: 13px;
+    color: #ccc;
+}
+
+.allin-stat strong {
+    display: block;
+    margin-top: 3px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.allin-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.allin-action-grid button {
+    min-height: 42px;
+}
+
+.allin-sample-extra {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.allin-suspect {
+    color: #ff5555;
+}
+
+.allin-warning {
+    color: #ffaa00;
+}
+
+.allin-good {
+    color: #44dd66;
+}
+
+.allin-nav {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.allin-nav button {
+    min-width: 110px;
+}
+
+.allin-landmark-box {
+    margin-top: 10px;
+    padding: 10px;
+    background: #111;
+    border: 1px solid #252525;
+    border-radius: 9px;
+    color: #ccc;
+    font-size: 13px;
+}
+
+@media (max-width: 420px) {
+    .allin-stat-grid,
+    .allin-action-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<!-- =====================================
+     MODAL DE VISUALIZAÇÃO DA AMOSTRA
+     ===================================== -->
+
+<div id="sampleModal" class="sample-modal">
+
+    <button
+        id="sampleModalClose"
+        class="sample-modal-close"
+        type="button"
+        aria-label="Fechar"
+    >
+        ✕
+    </button>
+
+    <div class="sample-modal-content">
+
+        <div
+            id="sampleModalTitle"
+            class="sample-modal-title">
+        </div>
+
+        <canvas
+            id="sampleModalCanvas"
+            width="600"
+            height="600">
+        </canvas>
+
+        <div
+            id="sampleModalInfo"
+            class="sample-modal-info">
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<h1>🥽 Gesture Studio</h1>
+
+
+<!-- ================================= -->
+<!-- STATUS -->
+<!-- ================================= -->
+
+<div id="status">
+    ⏳ Iniciando...
+</div>
+
+
+<!-- ================================= -->
+<!-- CÂMERA -->
+<!-- ================================= -->
+
+<div id="cameraContainer">
+
+    <video
+        id="camera"
+        autoplay
+        playsinline>
+    </video>
+
+    <canvas
+        id="canvas">
+    </canvas>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- LANDMARKS -->
+<!-- ================================= -->
+
+<div id="landmarkInfo">
+
+    🖐️ Aguardando mão...
+
+</div>
+
+
+<!-- ================================= -->
+<!-- RECONHECIMENTO -->
+<!-- ================================= -->
+
+<div id="recognitionResult">
+
+    🧠 Reconhecimento:
+    aguardando...
+
+</div>
+
+
+<!-- ================================= -->
+<!-- MODO TESTE -->
+<!-- ================================= -->
+
+<section id="testMode">
+
+    <h2>🧪 Modo Teste</h2>
+
+    <div id="testStatus">
+
+        Nenhum gesto selecionado.
+
+    </div>
+
+
+    <div id="testResult">
+
+        Faça um gesto para testar.
+
+    </div>
+
+
+    <button
+        id="stopTestButton"
+        style="display:none;">
+
+        ⏹️ Parar teste
+
+    </button>
+
+</section>
+
+
+<!-- ================================= -->
+<!-- EDITOR -->
+<!-- ================================= -->
+
+<section
+    id="editor"
+    style="display:none;">
+
+    <h2>✏️ Editor de Gesto</h2>
+
+
+    <div id="editorStatus">
+
+        Nenhum gesto selecionado.
+
+    </div>
+
+
+    <label>
+
+        Nome do gesto:
+
+    </label>
+
+
+    <input
+        id="editGestureName"
+        type="text"
+        placeholder="Nome do gesto">
+
+
+    <!-- ================================= -->
+    <!-- EDITOR DE GESTO -->
+    <!-- ================================= -->
+
+    <div class="editor-tabs">
+
+        <button
+            class="editor-tab active"
+            data-tab="editorOverview">
+
+            📊 Geral
+
+        </button>
+
+        <button
+            class="editor-tab"
+            data-tab="editorSamples">
+
+            🖐️ Amostras
+
+        </button>
+
+        <button
+            class="editor-tab"
+            data-tab="editorDetails">
+
+            🔎 Detalhes
+
+        </button>
+
+    </div>
+
+
+    <div
+        id="editorOverview"
+        class="editor-tab-content active">
+
+        <div id="editorInfo">
+
+            📊 0 amostras
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="editorSamples"
+        class="editor-tab-content">
+
+        <div id="sampleList">
+
+            📋 Amostras:
+            aguardando análise...
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="editorDetails"
+        class="editor-tab-content">
+
+        <div id="sampleDetails">
+
+            🔎 Selecione uma amostra
+
+        </div>
+
+    </div>
+
+
+    <button
+        id="addSamplesButton">
+
+        ➕ Adicionar amostras
+
+    </button>
+
+
+    <button
+        id="saveEditButton">
+
+        💾 Salvar alterações
+
+    </button>
+
+    <div class="allin-action-grid">
+        <button
+            id="allinExportGesture"
+            type="button"
+        >
+            📤 Exportar gesto
+        </button>
+
+        <button
+            id="allinImportGesture"
+            type="button"
+        >
+            📥 Importar gesto
+        </button>
+
+        <button
+            id="allinDuplicateGesture"
+            type="button"
+        >
+            🧬 Duplicar gesto
+        </button>
+
+        <button
+            id="allinDeleteGesture"
+            type="button"
+        >
+            🗑️ Excluir gesto
+        </button>
+
+        <input
+            id="allinImportFile"
+            type="file"
+            accept=".json,application/json"
+            hidden
+        >
+    </div>
+
+
+
+    <button
+        id="cancelEditButton">
+
+        ❌ Cancelar
+
+    </button>
+
+
+    <div id="editorRecordStatus">
+
+        Pronto.
+
+    </div>
+
+</section>
+
+
+<!-- ================================= -->
+<!-- WEBSOCKET -->
+<!-- ================================= -->
+
+<div id="websocketStatus">
+
+    🔌 WebSocket:
+    conectando...
+
+</div>
+
+
+<!-- ================================= -->
+<!-- CRIADOR -->
+<!-- ================================= -->
+
+<section id="recorder">
+
+    <h2>🎨 Criar gesto</h2>
+
+
+    <input
+        id="gestureName"
+        type="text"
+        placeholder="Nome do gesto">
+
+
+    <button
+        id="recordButton">
+
+        🔴 Gravar gesto
+
+    </button>
+
+
+    <div id="recordStatus">
+
+        Pronto para gravar
+
+    </div>
+
+</section>
+
+
+<!-- ================================= -->
+<!-- BIBLIOTECA -->
+<!-- ================================= -->
+
+<section id="library">
+
+    <h2>📚 Meus Gestos</h2>
+
+
+    <div id="libraryButtons">
+
+        <button id="exportButton">
+
+            📤 Exportar
+
+        </button>
+
+
+        <button id="importButton">
+
+            📥 Importar
+
+        </button>
+
+
+        <input
+            type="file"
+            id="importFile"
+            accept=".json"
+            hidden>
+
+    </div>
+
+
+    <div id="gestureList">
+
+        Carregando gestos...
+
+    </div>
+
+</section>
+
+
+
+<script type="module">
+
+
+// =====================================
+// IMPORTS
+// =====================================
+
+
+import {
+
+    HandTracking
+
+} from "./js/tracking.js?v=11";
+
+
+import {
+
+    GestureRecorder
+
+} from "./js/recorder.js?v=11";
+
+
+import {
+
+    GestureStorage
+
+} from "./js/storage.js?v=2";
+
+
+import {
+
+    GestureRecognizer
+
+} from "./js/recognizer.js?v=7";
+
+import {
+    GestureQuality
+} from "./js/quality.js?v=1";
+
+import {
+
+    GestureActions
+
+} from "./js/actions.js?v=5";
+
+
+import {
+
+    GestureWebSocket
+
+} from "./js/websocket.js?v=3";
+
+
+
+// =====================================
+// ELEMENTOS
+// =====================================
+
+
+const video =
+    document.getElementById(
+        "camera"
+    );
+
+
+const canvas =
+    document.getElementById(
+        "canvas"
+    );
+
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+
+const landmarkInfo =
+    document.getElementById(
+        "landmarkInfo"
+    );
+
+
+const recognitionResult =
+    document.getElementById(
+        "recognitionResult"
+    );
+
+
+const websocketStatus =
+    document.getElementById(
+        "websocketStatus"
+    );
+
+
+const gestureName =
+    document.getElementById(
+        "gestureName"
+    );
+
+
+const recordButton =
+    document.getElementById(
+        "recordButton"
+    );
+
+
+const recordStatus =
+    document.getElementById(
+        "recordStatus"
+    );
+
+
+const gestureList =
+    document.getElementById(
+        "gestureList"
+    );
+
+
+const exportButton =
+    document.getElementById(
+        "exportButton"
+    );
+
+
+const importButton =
+    document.getElementById(
+        "importButton"
+    );
+
+
+const importFile =
+    document.getElementById(
+        "importFile"
+    );
+
+
+
+// =====================================
+// TESTE
+// =====================================
+
+
+const testStatus =
+    document.getElementById(
+        "testStatus"
+    );
+
+
+const testResult =
+    document.getElementById(
+        "testResult"
+    );
+
+
+const stopTestButton =
+    document.getElementById(
+        "stopTestButton"
+    );
+
+
+
+// =====================================
+// EDITOR
+// =====================================
+
+
+const editor =
+    document.getElementById(
+        "editor"
+    );
+
+
+const editorStatus =
+    document.getElementById(
+        "editorStatus"
+    );
+
+
+const editGestureName =
+    document.getElementById(
+        "editGestureName"
+    );
+
+
+const editorInfo =
+    document.getElementById(
+        "editorInfo"
+    );
+
+
+const sampleList =
+    document.getElementById(
+        "sampleList"
+    );
+
+
+const sampleDetails =
+    document.getElementById(
+        "sampleDetails"
+    );
+
+
+const addSamplesButton =
+    document.getElementById(
+        "addSamplesButton"
+    );
+
+
+const saveEditButton =
+    document.getElementById(
+        "saveEditButton"
+    );
+
+
+const cancelEditButton =
+    document.getElementById(
+        "cancelEditButton"
+    );
+
+
+const editorRecordStatus =
+    document.getElementById(
+        "editorRecordStatus"
+    );
+
+
+
+// =====================================
+// SISTEMAS
+// =====================================
+
+
+const tracking =
+    new HandTracking(
+        video,
+        canvas
+    );
+
+
+const recorder =
+    new GestureRecorder();
+
+
+const storage =
+    new GestureStorage();
+
+
+const recognizer =
+    new GestureRecognizer(
+        storage
+    );
+
+const quality =
+    new GestureQuality();
+
+const actions =
+    new GestureActions();
+
+
+const websocket =
+    new GestureWebSocket();
+
+
+
+// =====================================
+// ESTADOS
+// =====================================
+
+
+let modoTeste =
+    false;
+
+
+let gestoEmTeste =
+    null;
+
+
+let gestoEditando =
+    null;
+
+
+let adicionandoAmostras =
+    false;
+
+
+let novasAmostras =
+    [];
+
+
+let ultimoEnvio =
+    0;
+
+
+const intervaloEnvio =
+    700;
+
+
+
+// =====================================
+// WEBSOCKET
+// =====================================
+
+
+websocket.onStatus =
+    (estado) => {
+
+
+        if (
+            estado ===
+            "connected"
+        ) {
+
+
+            websocketStatus.textContent =
+                "🟢 WebSocket conectado";
+
+        }
+
+
+        else if (
+            estado ===
+            "disconnected"
+        ) {
+
+
+            websocketStatus.textContent =
+                "🔴 WebSocket desconectado";
+
+        }
+
+
+        else if (
+            estado ===
+            "error"
+        ) {
+
+
+            websocketStatus.textContent =
+                "❌ Erro no WebSocket";
+
+        }
+
+    };
+
+
+websocket.onMessage =
+    (mensagem) => {
+
+        console.log(
+            "📨 Servidor:",
+            mensagem
+        );
+
+    };
+
+
+websocket.connect(
+    "ws://127.0.0.1:3000"
+);
+
+
+
+// =====================================
+// RECONHECIMENTO
+// =====================================
+
+
+recognizer.onResult =
+    (resultado) => {
+
+
+        // =================================
+        // GRAVANDO NOVAS AMOSTRAS
+        // =================================
+
+
+        if (
+            adicionandoAmostras
+        ) {
+
+            return;
+
+        }
+
+
+
+        // =================================
+        // MODO TESTE
+        // =================================
+
+
+        if (
+            modoTeste
+        ) {
+
+
+            testarResultado(
+                resultado
+            );
+
+
+            return;
+
+        }
+
+
+
+        // =================================
+        // NORMAL
+        // =================================
+
+
+        if (!resultado) {
+
+
+            recognitionResult.textContent =
+                "🧠 Nenhum gesto cadastrado";
+
+
+            return;
+
+        }
+
+
+        recognitionResult.textContent =
+
+            `🧠 ${resultado.name} — ` +
+
+            `${resultado.confidence.toFixed(1)}% ` +
+
+            `| estabilidade ` +
+
+            `${(resultado.stability * 100).toFixed(0)}%`;
+
+
+
+        // =================================
+        // EXECUTAR
+        // =================================
+
+
+        if (
+
+            resultado.stability >= 0.75 &&
+
+            resultado.confidence >= 80
+
+        ) {
+
+            const agora =
+                Date.now();
+
+
+            if (
+
+                agora -
+                ultimoEnvio >=
+                intervaloEnvio
+
+            ) {
+
+                actions.execute(
+                    resultado.name
+                );
+
+
+                const acao =
+                    actions.getAction(
+                        resultado.name
+                    );
+
+
+                websocket.sendGesture(
+
+                    resultado.name,
+
+                    Number(
+                        resultado.confidence.toFixed(2)
+                    ),
+
+                    acao
+
+                );
+
+
+                ultimoEnvio =
+                    agora;
+
+            }
+
+        }
+
+    };
+
+
+
+// =====================================
+// TESTE
+// =====================================
+
+
+function testarResultado(
+    resultado
+) {
+
+
+    if (!gestoEmTeste) {
+
+        return;
+
+    }
+
+
+    if (!resultado) {
+
+
+        testResult.textContent =
+            "⚪ Nenhum gesto detectado.";
+
+
+        return;
+
+    }
+
+
+    const confianca =
+        resultado.confidence;
+
+
+    const estabilidade =
+        resultado.stability;
+
+
+    testResult.innerHTML = `
+
+        <strong>
+            🧠 Detectado:
+            ${resultado.name}
+        </strong>
+
+        <br><br>
+
+        🎯 Confiança:
+        ${confianca.toFixed(1)}%
+
+        <br>
+
+        📊 Estabilidade:
+        ${(estabilidade * 100).toFixed(1)}%
+
+    `;
+
+
+    if (
+        resultado.name ===
+        gestoEmTeste
+    ) {
+
+
+        if (
+
+            confianca >= 80 &&
+
+            estabilidade >= 0.75
+
+        ) {
+
+
+            testResult.innerHTML += `
+
+                <br><br>
+
+                <strong>
+                    🟢 GESTO RECONHECIDO!
+                </strong>
+
+            `;
+
+        }
+
+        else {
+
+
+            testResult.innerHTML += `
+
+                <br><br>
+
+                🟡 Gesto parecido,
+                mas instável.
+
+            `;
+
+        }
+
+    }
+
+    else {
+
+
+        testResult.innerHTML += `
+
+            <br><br>
+
+            🔴 Esperado:
+            ${gestoEmTeste}
+
+        `;
+
+    }
+
+}
+
+
+
+// =====================================
+// INICIAR TESTE
+// =====================================
+
+
+function iniciarTeste(
+    nome
+) {
+
+
+    modoTeste =
+        true;
+
+
+    gestoEmTeste =
+        nome;
+
+
+    testStatus.innerHTML =
+
+        `🧪 Testando:
+        <strong>${nome}</strong>`;
+
+
+    testResult.textContent =
+        "🖐️ Faça o gesto...";
+
+
+    stopTestButton.style.display =
+        "block";
+
+}
+
+
+stopTestButton.addEventListener(
+    "click",
+    () => {
+
+
+        modoTeste =
+            false;
+
+
+        gestoEmTeste =
+            null;
+
+
+        testStatus.textContent =
+            "Nenhum gesto selecionado.";
+
+
+        testResult.textContent =
+            "Faça um gesto para testar.";
+
+
+        stopTestButton.style.display =
+            "none";
+
+    }
+);
+
+
+
+// =====================================
+// ABRIR EDITOR
+// =====================================
+
+
+async function abrirEditor(
+    id
+) {
+
+
+    const gesto =
+        await storage.get(
+            Number(id)
+        );
+
+
+    if (!gesto) {
+
+
+        alert(
+            "Gesto não encontrado."
+        );
+
+
+        return;
+
+    }
+
+
+    gestoEditando =
+        gesto;
+
+
+    novasAmostras =
+        [];
+
+
+    adicionandoAmostras =
+        false;
+
+
+    editor.style.display =
+        "block";
+
+
+    editor.scrollIntoView({
+        behavior: "smooth"
+    });
+
+
+    editorStatus.innerHTML =
+
+        `✏️ Editando:
+        <strong>${gesto.name}</strong>`;
+
+
+    editGestureName.value =
+        gesto.name;
+
+
+    atualizarEditorInfo();
+
+
+    editorRecordStatus.textContent =
+        "Pronto.";
+
+}
+
+
+
+// =====================================
+// INFO EDITOR
+// =====================================
+
+
+function atualizarEditorInfo() {
+
+    if (!gestoEditando) {
+
+        return;
+
+    }
+
+
+    const antigas =
+        gestoEditando.samples.length;
+
+
+    const novas =
+        novasAmostras.length;
+
+
+    const total =
+        antigas + novas;
+
+
+    editorInfo.innerHTML = `
+
+        📊 Amostras atuais:
+        <strong>${antigas}</strong>
+
+        <br>
+
+        ➕ Novas:
+        <strong>${novas}</strong>
+
+        <br>
+
+        📦 Total:
+        <strong>${total}</strong>
+
+    `;
+
+
+    // =====================================
+    // ANÁLISE DE QUALIDADE
+    // =====================================
+
+    const analise =
+        quality.analyze(
+            gestoEditando.samples
+        );
+
+
+    // =====================================
+    // BLOCO 1 — BARRA VISUAL
+    // =====================================
+
+    const percentualQualidade =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                analise.quality
+            )
+        );
+
+
+    let nivelQualidade =
+        "Excelente";
+
+
+    let emojiNivel =
+        "🏆";
+
+
+    if (
+        percentualQualidade < 85
+    ) {
+
+        nivelQualidade =
+            "Bom";
+
+        emojiNivel =
+            "🟢";
+
+    }
+
+
+    if (
+        percentualQualidade < 70
+    ) {
+
+        nivelQualidade =
+            "Instável";
+
+        emojiNivel =
+            "🟡";
+
+    }
+
+
+    if (
+        percentualQualidade < 50
+    ) {
+
+        nivelQualidade =
+            "Ruim";
+
+        emojiNivel =
+            "🔴";
+
+    }
+
+
+    editorInfo.innerHTML += `
+
+        <br>
+
+        <div
+            style="
+                margin-top:12px;
+                padding:12px;
+                border-radius:12px;
+                background:rgba(255,255,255,0.06);
+            "
+        >
+
+            🧠 <strong>Estado do gesto</strong>
+
+            <br>
+
+            ${emojiNivel}
+            <strong>${nivelQualidade}</strong>
+
+            <br><br>
+
+            <div
+                style="
+                    width:100%;
+                    height:12px;
+                    background:rgba(255,255,255,0.12);
+                    border-radius:20px;
+                    overflow:hidden;
+                "
+            >
+
+                <div
+                    style="
+                        width:${percentualQualidade}%;
+                        height:100%;
+                        background:currentColor;
+                        border-radius:20px;
+                        transition:width 0.3s ease;
+                    "
+                ></div>
+
+            </div>
+
+            <br>
+
+            📊
+            <strong>
+                ${percentualQualidade.toFixed(1)}%
+            </strong>
+
+        </div>
+
+    `;
+
+
+    // =====================================
+    // RESUMO GERAL DA QUALIDADE
+    // =====================================
+
+    let emojiQualidade =
+        "🟢";
+
+
+    if (
+        analise.quality < 80
+    ) {
+
+        emojiQualidade =
+            "🟡";
+
+    }
+
+
+    if (
+        analise.quality < 60
+    ) {
+
+        emojiQualidade =
+            "🔴";
+
+    }
+
+
+    editorInfo.innerHTML += `
+
+        <br>
+
+        🧠 <strong>Qualidade do gesto</strong>
+
+        <br><br>
+
+        ${emojiQualidade}
+        <strong>${analise.quality.toFixed(1)}%</strong>
+
+        <br>
+
+        🟢 Boas:
+        <strong>${analise.good}</strong>
+
+        &nbsp;|&nbsp;
+
+        🟡 Diferentes:
+        <strong>${analise.warning}</strong>
+
+        &nbsp;|&nbsp;
+
+        🔴 Suspeitas:
+        <strong>${analise.bad}</strong>
+
+    `;
+
+
+    if (
+        sampleList &&
+        analise.details
+    ) {
+
+
+    sampleList.innerHTML = `
+
+            📋 <strong>Amostras</strong>
+
+            <br><br>
+
+            ${analise.details.map(
+                detalhe => {
+
+                    let emoji = "🟢";
+
+                    if (
+                        detalhe.classification ===
+                        "warning"
+                    ) {
+
+                        emoji = "🟡";
+
+                    }
+
+
+                    if (
+                        detalhe.classification ===
+                        "bad"
+                    ) {
+
+                        emoji = "🔴";
+
+                    }
+
+
+                    return `
+
+                        <div
+                            class="sampleItem"
+                            data-index="${detalhe.index}"
+                            onclick="selecionarAmostra(${detalhe.index})"
+                        >
+
+                            ${String(
+                                detalhe.index + 1
+                            ).padStart(2, "0")}
+
+                            ${emoji}
+
+                            ${detalhe.distance.toFixed(3)}
+
+                        </div>
+
+                    `;
+
+                }
+            ).join("")}
+
+        `;
+
+    }
+
+
+    if (
+        sampleDetails
+    ) {
+
+        sampleDetails.innerHTML = `
+
+            🔎 Selecione uma amostra
+
+        `;
+
+    }
+
+}
+
+// =====================================
+// SELECIONAR AMOSTRA
+// =====================================
+
+window.selecionarAmostra = function(index) {
+
+    document
+        .querySelectorAll(".sampleItem")
+        .forEach(item => {
+            item.classList.remove("selected");
+        });
+
+
+    const itemSelecionado =
+        document.querySelector(
+            `.sampleItem[data-index="${index}"]`
+        );
+
+
+    if (itemSelecionado) {
+
+        itemSelecionado.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    if (
+        !gestoEditando ||
+        !gestoEditando.samples
+    ) {
+
+        return;
+
+    }
+
+
+    const sample =
+        gestoEditando.samples[index];
+
+
+    if (!sample) {
+
+        return;
+
+    }
+
+
+    const qualidade =
+        quality.analyze(
+            gestoEditando.samples
+        );
+
+
+    const detalhe =
+        qualidade.details.find(
+            item =>
+                item.index === index
+        );
+
+
+    if (!detalhe) {
+
+        return;
+
+    }
+
+
+    let emoji = "🟢";
+
+    let texto = "Boa";
+
+
+    if (
+        detalhe.classification ===
+        "warning"
+    ) {
+
+        emoji = "🟡";
+
+        texto = "Diferente";
+
+    }
+
+
+    if (
+        detalhe.classification ===
+        "bad"
+    ) {
+
+        emoji = "🔴";
+
+        texto = "Suspeita";
+
+    }
+
+
+    // =====================================
+    // COMPARAÇÃO COM A REFERÊNCIA
+    // =====================================
+
+    const centro =
+        quality.getCenter(
+            gestoEditando.samples
+        );
+
+
+    const normalizado =
+        quality.normalize(
+            sample
+        );
+
+
+    const desvios = [];
+
+
+    if (
+        centro &&
+        normalizado
+    ) {
+
+        for (
+            let i = 0;
+            i < 21;
+            i++
+        ) {
+
+            const dx =
+                normalizado[i].x -
+                centro[i].x;
+
+
+            const dy =
+                normalizado[i].y -
+                centro[i].y;
+
+
+            const dz =
+                normalizado[i].z -
+                centro[i].z;
+
+
+            const distancia =
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy +
+                    dz * dz
+                );
+
+
+            desvios.push({
+
+                index:
+                    i,
+
+                distance:
+                    distancia
+
+            });
+
+        }
+
+    }
+
+
+    desvios.sort(
+        (a, b) =>
+            b.distance -
+            a.distance
+    );
+
+
+    const maioresDesvios =
+        desvios.slice(0, 5);
+
+
+    // =====================================
+    // DESVIO POR DEDO
+    // =====================================
+
+    const dedos =
+        quality.analyzeFingers(
+            sample,
+            centro
+        );
+
+
+    let textoDedos =
+        "";
+
+
+    if (
+        dedos &&
+        dedos.length > 0
+    ) {
+
+        textoDedos = `
+
+            <br>
+
+            🖐️ <strong>Desvio por dedo</strong>
+
+            <br><br>
+
+            ${dedos.map(
+                dedo => {
+
+                    let emoji =
+                        "🟢";
+
+
+                    if (
+                        dedo.classification ===
+                        "warning"
+                    ) {
+
+                        emoji =
+                            "🟡";
+
+                    }
+
+
+                    if (
+                        dedo.classification ===
+                        "bad"
+                    ) {
+
+                        emoji =
+                            "🔴";
+
+                    }
+
+
+                    return `
+
+                        ${dedo.emoji}
+                        <strong>${
+                            dedo.name
+                        }</strong>
+
+                        ${emoji}
+
+                        <strong>${
+                            dedo.distance.toFixed(3)
+                        }</strong>
+
+                        <br>
+
+                    `;
+
+                }
+            ).join("")}
+
+        `;
+
+    }
+
+
+    const nomesPontos = {
+
+        0: "Pulso",
+
+        1: "Polegar",
+        2: "Polegar",
+        3: "Polegar",
+        4: "Polegar",
+
+        5: "Indicador",
+        6: "Indicador",
+        7: "Indicador",
+        8: "Indicador",
+
+        9: "Médio",
+        10: "Médio",
+        11: "Médio",
+        12: "Médio",
+
+        13: "Anelar",
+        14: "Anelar",
+        15: "Anelar",
+        16: "Anelar",
+
+        17: "Mínimo",
+        18: "Mínimo",
+        19: "Mínimo",
+        20: "Mínimo"
+
+    };
+
+
+    let textoDesvios =
+        "";
+
+
+    if (
+        maioresDesvios.length > 0
+    ) {
+
+        textoDesvios = `
+
+            <br>
+
+            📍 <strong>Maiores desvios</strong>
+
+            <br><br>
+
+            ${maioresDesvios.map(
+                ponto => `
+
+                    Ponto ${ponto.index} —
+                    <strong>${
+                        nomesPontos[ponto.index] ||
+                        "Desconhecido"
+                    }</strong>:
+
+                    <strong>${
+                        ponto.distance.toFixed(3)
+                    }</strong>
+
+                    <br>
+
+                `
+            ).join("")}
+
+        `;
+
+    }
+
+
+    // =====================================
+    // DIAGNÓSTICO INTELIGENTE
+    // =====================================
+
+    const diagnostico =
+        quality.getDiagnosis(
+            dedos
+        );
+
+
+    let textoDiagnostico =
+        "";
+
+
+    if (diagnostico) {
+
+        let emojiDiagnostico =
+            "🟢";
+
+
+        if (
+            diagnostico.level ===
+            "warning"
+        ) {
+
+            emojiDiagnostico =
+                "🟡";
+
+        }
+
+
+        if (
+            diagnostico.level ===
+            "bad"
+        ) {
+
+            emojiDiagnostico =
+                "🔴";
+
+        }
+
+
+        textoDiagnostico = `
+
+            <br>
+
+            🧠 <strong>Diagnóstico</strong>
+
+            <br><br>
+
+            ${emojiDiagnostico}
+            ${diagnostico.message}
+
+        `;
+
+    }
+
+
+    if (sampleDetails) {
+
+        sampleDetails.innerHTML = `
+
+            🔎 <strong>Amostra #${
+                index + 1
+            }</strong>
+
+            <br><br>
+
+            ${emoji}
+            Classificação:
+            <strong>${texto}</strong>
+
+            <br>
+
+            📏 Distância:
+            <strong>${
+                detalhe.distance.toFixed(4)
+            }</strong>
+
+            ${textoDesvios}
+
+            ${textoDedos}
+
+            ${textoDiagnostico}
+
+            <br>
+
+            <button
+                id="deleteSampleButton"
+                type="button"
+                onclick="excluirAmostraSelecionada(${index})"
+            >
+                🗑️ Excluir esta amostra
+            </button>
+
+            <br><br>
+
+            🖐️ <strong>Visualização da mão</strong>
+
+            <br><br>
+
+            <canvas
+                id="sampleCanvas"
+                width="300"
+                height="300"
+                style="max-width:100%; border-radius:12px;"
+            ></canvas>
+
+        `;
+
+    }
+
+
+    // =====================================
+    // BLOCO 2 — COR DOS LANDMARKS
+    // =====================================
+
+    function corLandmark(index) {
+
+        const desvio =
+            desvios.find(
+                ponto =>
+                    ponto.index === index
+            );
+
+
+        if (!desvio) {
+
+            return "currentColor";
+
+        }
+
+
+        if (
+            desvio.distance > 0.20
+        ) {
+
+            return "#ff4444";
+
+        }
+
+
+        if (
+            desvio.distance > 0.12
+        ) {
+
+            return "#ffaa00";
+
+        }
+
+
+        return "#44dd66";
+
+    }
+
+
+    // =====================================
+    // BLOCO 2.3 — PONTO INTERATIVO
+    // =====================================
+
+    function detectarLandmarkCanvas(event) {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+
+        const escalaX =
+            canvas.width /
+            rect.width;
+
+
+        const escalaY =
+            canvas.height /
+            rect.height;
+
+
+        const toqueX =
+            (event.clientX - rect.left) *
+            escalaX;
+
+
+        const toqueY =
+            (event.clientY - rect.top) *
+            escalaY;
+
+
+        let melhor =
+            null;
+
+
+        let menorDistancia =
+            Infinity;
+
+
+        if (!pontos) {
+
+            return null;
+
+        }
+
+
+        for (
+            let i = 0;
+            i < pontos.length;
+            i++
+        ) {
+
+            const x =
+                margem +
+                (
+                    pontos[i].x +
+                    0.5
+                ) *
+                tamanho;
+
+
+            const y =
+                margem +
+                (
+                    0.5 -
+                    pontos[i].y
+                ) *
+                tamanho;
+
+
+            const dx =
+                toqueX - x;
+
+
+            const dy =
+                toqueY - y;
+
+
+            const distancia =
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy
+                );
+
+
+            if (
+                distancia < menorDistancia
+            ) {
+
+                menorDistancia =
+                    distancia;
+
+                melhor =
+                    i;
+
+            }
+
+        }
+
+
+        if (
+            menorDistancia > 18
+        ) {
+
+            return null;
+
+        }
+
+
+        return melhor;
+
+    }
+
+
+    // =====================================
+    // DESENHAR COMPARAÇÃO
+    // =====================================
+
+    const canvas =
+        document.getElementById(
+            "sampleCanvas"
+        );
+
+
+    if (canvas) {
+
+        const ctx =
+            canvas.getContext("2d");
+
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        const margem = 30;
+
+        const tamanho =
+            canvas.width -
+            margem * 2;
+
+
+        const conexoes = [
+
+            [0, 1],
+            [1, 2],
+            [2, 3],
+            [3, 4],
+
+            [0, 5],
+            [5, 6],
+            [6, 7],
+            [7, 8],
+
+            [0, 9],
+            [9, 10],
+            [10, 11],
+            [11, 12],
+
+            [0, 13],
+            [13, 14],
+            [14, 15],
+            [15, 16],
+
+            [0, 17],
+            [17, 18],
+            [18, 19],
+            [19, 20],
+
+            [5, 9],
+            [9, 13],
+            [13, 17]
+
+        ];
+
+
+        // ---------------------------------
+        // REFERÊNCIA
+        // ---------------------------------
+
+        if (centro) {
+
+            ctx.beginPath();
+
+            for (
+                const [a, b]
+                of conexoes
+            ) {
+
+                const x1 =
+                    margem +
+                    (
+                        centro[a].x +
+                        0.5
+                    ) *
+                    tamanho;
+
+
+                const y1 =
+                    margem +
+                    (
+                        0.5 -
+                        centro[a].y
+                    ) *
+                    tamanho;
+
+
+                const x2 =
+                    margem +
+                    (
+                        centro[b].x +
+                        0.5
+                    ) *
+                    tamanho;
+
+
+                const y2 =
+                    margem +
+                    (
+                        0.5 -
+                        centro[b].y
+                    ) *
+                    tamanho;
+
+
+                ctx.moveTo(
+                    x1,
+                    y1
+                );
+
+                ctx.lineTo(
+                    x2,
+                    y2
+                );
+
+            }
+
+
+            ctx.stroke();
+
+
+            for (
+                let i = 0;
+                i < centro.length;
+                i++
+            ) {
+
+                const x =
+                    margem +
+                    (
+                        centro[i].x +
+                        0.5
+                    ) *
+                    tamanho;
+
+
+                const y =
+                    margem +
+                    (
+                        0.5 -
+                        centro[i].y
+                    ) *
+                    tamanho;
+
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    x,
+                    y,
+                    3,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+
+            }
+
+        }
+
+
+        // ---------------------------------
+        // AMOSTRA SELECIONADA
+        // ---------------------------------
+
+        const pontos =
+            normalizado;
+
+
+        if (pontos) {
+
+            ctx.beginPath();
+
+            for (
+                const [a, b]
+                of conexoes
+            ) {
+
+                const x1 =
+                    margem +
+                    (
+                        pontos[a].x +
+                        0.5
+                    ) *
+                    tamanho;
+
+
+                const y1 =
+                    margem +
+                    (
+                        0.5 -
+                        pontos[a].y
+                    ) *
+                    tamanho;
+
+
+                const x2 =
+                    margem +
+                    (
+                        pontos[b].x +
+                        0.5
+                    ) *
+                    tamanho;
+
+
+                const y2 =
+                    margem +
+                    (
+                        0.5 -
+                        pontos[b].y
+                    ) *
+                    tamanho;
+
+
+                ctx.moveTo(
+                    x1,
+                    y1
+                );
+
+                ctx.lineTo(
+                    x2,
+                    y2
+                );
+
+            }
+
+
+            ctx.stroke();
+
+
+            for (
+                let i = 0;
+                i < pontos.length;
+                i++
+            ) {
+
+                const x =
+                    margem +
+                    (
+                        pontos[i].x +
+                        0.5
+                    ) *
+                    tamanho;
+
+
+                const y =
+                    margem +
+                    (
+                        0.5 -
+                        pontos[i].y
+                    ) *
+                    tamanho;
+
+
+                ctx.beginPath();
+
+                ctx.fillStyle =
+                    corLandmark(i);
+
+                ctx.arc(
+                    x,
+                    y,
+                    5,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+
+            }
+
+
+            // ---------------------------------
+            // DESTAQUE DOS MAIORES DESVIOS
+            // ---------------------------------
+
+            const analiseCanvas =
+                quality.analyze(
+                    [sample]
+                );
+
+
+            if (
+                analiseCanvas &&
+                analiseCanvas.details &&
+                analiseCanvas.details.length
+            ) {
+
+                const centroCanvas =
+                    quality.getCenter(
+                        gestoEditando.samples
+                    );
+
+
+                if (centroCanvas) {
+
+                    const desviosPontos = [];
+
+                    for (
+                        let i = 0;
+                        i < pontos.length;
+                        i++
+                    ) {
+
+                        const dx =
+                            pontos[i].x -
+                            centroCanvas[i].x;
+
+                        const dy =
+                            pontos[i].y -
+                            centroCanvas[i].y;
+
+                        const dz =
+                            pontos[i].z -
+                            centroCanvas[i].z;
+
+                        const distancia =
+                            Math.sqrt(
+                                dx * dx +
+                                dy * dy +
+                                dz * dz
+                            );
+
+
+                        desviosPontos.push({
+
+                            index:
+                                i,
+
+                            distance:
+                                distancia
+
+                        });
+
+                    }
+
+
+                    desviosPontos.sort(
+                        (
+                            a,
+                            b
+                        ) =>
+                            b.distance -
+                            a.distance
+                    );
+
+
+                    const maiores =
+                        desviosPontos.slice(
+                            0,
+                            5
+                        );
+
+
+                    for (
+                        const ponto
+                        of maiores
+                    ) {
+
+                        const x =
+                            margem +
+                            (
+                                pontos[
+                                    ponto.index
+                                ].x +
+                                0.5
+                            ) *
+                            tamanho;
+
+
+                        const y =
+                            margem +
+                            (
+                                0.5 -
+                                pontos[
+                                    ponto.index
+                                ].y
+                            ) *
+                            tamanho;
+
+
+                        ctx.beginPath();
+
+                        ctx.arc(
+                            x,
+                            y,
+                            10,
+                            0,
+                            Math.PI * 2
+                        );
+
+                        ctx.stroke();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    // =====================================
+    // ABRIR MODAL DA AMOSTRA
+    // =====================================
+
+    if (typeof abrirModalAmostra === "function") {
+
+        abrirModalAmostra();
+
+    }
+
+}
+
+// =====================================
+// BLOCO 2.3 — CLIQUE NO LANDMARK
+// =====================================
+
+if (canvas) {
+
+    canvas.addEventListener(
+        "click",
+        function(event) {
+
+            const indice =
+                detectarLandmarkCanvas(
+                    event
+                );
+
+
+            if (
+                indice === null
+            ) {
+
+                return;
+
+            }
+
+
+            const desvio =
+                desvios.find(
+                    ponto =>
+                        ponto.index === indice
+                );
+
+
+            if (!desvio) {
+
+                return;
+
+            }
+
+
+            const nome =
+                nomesPontos[indice] ||
+                "Desconhecido";
+
+
+            let classificacao =
+                "🟢 Normal";
+
+
+            if (
+                desvio.distance > 0.20
+            ) {
+
+                classificacao =
+                    "🔴 Suspeito";
+
+            }
+
+            else if (
+                desvio.distance > 0.12
+            ) {
+
+                classificacao =
+                    "🟡 Atenção";
+
+            }
+
+
+            if (sampleDetails) {
+
+                let painel =
+                    document.getElementById(
+                        "landmarkSelectionInfo"
+                    );
+
+
+                if (!painel) {
+
+                    painel =
+                        document.createElement(
+                            "div"
+                        );
+
+                    painel.id =
+                        "landmarkSelectionInfo";
+
+                    sampleDetails.appendChild(
+                        painel
+                    );
+
+                }
+
+
+                painel.innerHTML = `
+
+                    <br>
+
+                    🎯 <strong>Ponto selecionado</strong>
+
+                    <br><br>
+
+                    📍 Ponto:
+                    <strong>${indice}</strong>
+
+                    <br>
+
+                    🖐️ Dedo:
+                    <strong>${nome}</strong>
+
+                    <br>
+
+                    📏 Desvio:
+                    <strong>${desvio.distance.toFixed(4)}</strong>
+
+                    <br>
+
+                    Estado:
+                    <strong>${classificacao}</strong>
+
+                `;
+
+            }
+
+        }
+    );
+
+}
+
+
+// =====================================
+// EXCLUIR AMOSTRA
+// =====================================
+
+window.excluirAmostraSelecionada = async function(index) {
+
+    if (
+        !gestoEditando ||
+        !gestoEditando.samples
+    ) {
+
+        return;
+
+    }
+
+
+    const sample =
+        gestoEditando.samples[index];
+
+
+    if (!sample) {
+
+        return;
+
+    }
+
+
+    const confirmar =
+        confirm(
+            `Excluir a amostra #${index + 1}?`
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    gestoEditando.samples.splice(
+        index,
+        1
+    );
+
+
+    const gestoAtualizado = {
+
+        id:
+            gestoEditando.id,
+
+        name:
+            gestoEditando.name,
+
+        samples:
+            gestoEditando.samples,
+
+        createdAt:
+            gestoEditando.createdAt,
+
+        updatedAt:
+            new Date().toISOString()
+
+    };
+
+
+    try {
+
+        await storage.update(
+            gestoAtualizado
+        );
+
+
+        gestoEditando =
+            gestoAtualizado;
+
+
+        await atualizarBiblioteca();
+
+
+        await atualizarEditorInfo();
+
+
+        await recognizer.load();
+
+
+        sampleDetails.innerHTML = `
+
+            🗑️ <strong>Amostra excluída!</strong>
+
+            <br><br>
+
+            📊 O gesto agora possui
+            <strong>${
+                gestoEditando.samples.length
+            }</strong>
+            amostras.
+
+        `;
+
+
+        editorRecordStatus.textContent =
+            "✅ Amostra excluída e salva.";
+
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "❌ Erro ao excluir amostra:",
+            erro
+        );
+
+
+        editorRecordStatus.textContent =
+            "❌ Erro ao excluir amostra.";
+
+    }
+
+}
+
+
+// =====================================
+// ADICIONAR AMOSTRAS
+// =====================================
+
+
+addSamplesButton.addEventListener(
+    "click",
+    () => {
+
+
+        if (!gestoEditando) {
+
+
+            editorRecordStatus.textContent =
+                "⚠️ Nenhum gesto selecionado.";
+
+
+            return;
+
+        }
+
+
+        adicionandoAmostras =
+            true;
+
+
+        novasAmostras =
+            [];
+
+
+        editorRecordStatus.textContent =
+
+            "🔴 Faça o gesto. Coletando novas amostras...";
+
+
+        addSamplesButton.disabled =
+            true;
+
+
+        saveEditButton.disabled =
+            true;
+
+    }
+);
+
+
+
+// =====================================
+// COLETA DE NOVAS AMOSTRAS
+// =====================================
+
+
+tracking.onHandDetected =
+    (landmarks) => {
+
+
+        status.textContent =
+            "🟢 Mão detectada";
+
+
+        landmarkInfo.textContent =
+            "🖐️ 21 landmarks detectados";
+
+
+        const agora =
+            performance.now();
+
+
+        recorder.update(
+            landmarks,
+            agora
+        );
+
+
+        // ================================
+        // EDITOR
+        // ================================
+
+
+        if (
+            adicionandoAmostras &&
+            novasAmostras.length < 50
+        ) {
+
+
+            novasAmostras.push(
+                landmarks.map(
+                    ponto => ({
+                        x: ponto.x,
+                        y: ponto.y,
+                        z: ponto.z
+                    })
+                )
+            );
+
+
+            atualizarEditorInfo();
+
+
+            editorRecordStatus.textContent =
+
+                `🔴 Coletando:
+                ${novasAmostras.length} novas amostras`;
+
+
+
+            // ============================
+            // TERMINAR EM 50
+            // ============================
+
+
+            if (
+                novasAmostras.length >= 50
+            ) {
+
+
+                adicionandoAmostras =
+                    false;
+
+
+                addSamplesButton.disabled =
+                    false;
+
+
+                saveEditButton.disabled =
+                    false;
+
+
+                editorRecordStatus.textContent =
+
+                    "✅ 50 novas amostras coletadas!";
+
+
+                atualizarEditorInfo();
+
+            }
+
+
+            return;
+
+        }
+
+
+
+        // ================================
+        // RECONHECEDOR
+        // ================================
+
+
+        recognizer.update(
+            landmarks,
+            agora
+        );
+
+    };
+
+
+
+// =====================================
+// SALVAR ALTERAÇÕES
+// =====================================
+
+
+saveEditButton.addEventListener(
+    "click",
+    async () => {
+
+
+        if (!gestoEditando) {
+
+
+            return;
+
+        }
+
+
+        const novoNome =
+            editGestureName.value.trim();
+
+
+        if (!novoNome) {
+
+
+            editorRecordStatus.textContent =
+                "⚠️ Digite um nome.";
+
+
+            return;
+
+        }
+
+
+        if (
+            adicionandoAmostras
+        ) {
+
+
+            editorRecordStatus.textContent =
+                "⚠️ Termine a coleta primeiro.";
+
+
+            return;
+
+        }
+
+
+
+        // =================================
+        // NOVO OBJETO
+        // =================================
+
+
+        const gestoAtualizado = {
+
+            id:
+                gestoEditando.id,
+
+            name:
+                novoNome,
+
+            samples:
+                [
+                    ...gestoEditando.samples,
+
+                    ...novasAmostras
+                ],
+
+            createdAt:
+                gestoEditando.createdAt,
+
+            updatedAt:
+                new Date().toISOString()
+
+        };
+
+
+
+        try {
+
+
+            await storage.update(
+                gestoAtualizado
+            );
+
+
+            editorRecordStatus.textContent =
+                "💾 Alterações salvas!";
+
+
+            gestoEditando =
+                gestoAtualizado;
+
+
+            novasAmostras =
+                [];
+
+
+            await atualizarBiblioteca();
+        console.log("✅ DEBUG: atualizarBiblioteca terminou");
+
+
+            await recognizer.load();
+        console.log("✅ DEBUG: recognizer.load terminou");
+
+
+
+            setTimeout(
+                () => {
+
+                    fecharEditor();
+
+                },
+                800
+            );
+
+        }
+
+
+        catch (erro) {
+
+
+            console.error(
+                erro
+            );
+
+
+            editorRecordStatus.textContent =
+                "❌ Erro ao salvar.";
+
+        }
+
+    }
+);
+
+
+
+// =====================================
+// CANCELAR
+// =====================================
+
+
+cancelEditButton.addEventListener(
+    "click",
+    () => {
+
+        fecharEditor();
+
+    }
+);
+
+
+
+
+function fecharEditor() {
+
+
+    editor.style.display =
+        "none";
+
+
+    gestoEditando =
+        null;
+
+
+    novasAmostras =
+        [];
+
+
+    adicionandoAmostras =
+        false;
+
+
+    addSamplesButton.disabled =
+        false;
+
+
+    saveEditButton.disabled =
+        false;
+
+
+    editorRecordStatus.textContent =
+        "Pronto.";
+
+}
+
+
+
+// =====================================
+// BIBLIOTECA
+// =====================================
+
+
+async function atualizarBiblioteca() {
+
+
+    try {
+
+
+        const gestos =
+            await storage.getAll();
+
+
+        gestureList.innerHTML =
+            "";
+
+
+        if (
+            gestos.length === 0
+        ) {
+
+
+            gestureList.innerHTML =
+                "<p>Nenhum gesto salvo ainda.</p>";
+
+
+            return;
+
+        }
+
+
+        gestos.forEach(
+            (gesto) => {
+
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "gestureCard";
+
+
+                const acao =
+                    actions.getAction(
+                        gesto.name
+                    );
+
+
+                card.innerHTML = `
+
+                    <div>
+
+                        <strong>
+                            ${gesto.name}
+                        </strong>
+
+                        <br>
+
+                        <small>
+                            ${gesto.samples.length}
+                            amostras
+                        </small>
+
+                        <br><br>
+
+
+                        <button
+                            class="testGestureButton"
+                            data-name="${gesto.name}">
+
+                            🧪 Testar
+
+                        </button>
+
+
+                        <button
+                            class="editGestureButton"
+                            data-id="${gesto.id}">
+
+                            ✏️ Editar
+
+                        </button>
+
+
+                        <br><br>
+
+
+                        <label>
+                            ⚡ Ação:
+                        </label>
+
+
+                        <select
+                            class="actionSelect"
+                            data-name="${gesto.name}">
+
+
+                            <option
+                                value="none"
+                                ${acao === "none" ? "selected" : ""}>
+
+                                Nenhuma
+
+                            </option>
+
+
+                            <option
+                                value="click"
+                                ${acao === "click" ? "selected" : ""}>
+
+                                🖱️ Clique
+
+                            </option>
+
+
+                            <option
+                                value="double-click"
+                                ${acao === "double-click" ? "selected" : ""}>
+
+                                🖱️ Duplo clique
+
+                            </option>
+
+
+                            <option
+                                value="right-click"
+                                ${acao === "right-click" ? "selected" : ""}>
+
+                                🖱️ Clique direito
+
+                            </option>
+
+
+                            <option
+                                value="enter"
+                                ${acao === "enter" ? "selected" : ""}>
+
+                                ⌨️ Enter
+
+                            </option>
+
+
+                            <option
+                                value="space"
+                                ${acao === "space" ? "selected" : ""}>
+
+                                ⌨️ Espaço
+
+                            </option>
+
+
+                        </select>
+
+
+                        <br><br>
+
+
+                        <button
+                            class="saveActionButton"
+                            data-name="${gesto.name}">
+
+                            💾 Salvar ação
+
+                        </button>
+
+
+                    </div>
+
+
+                    <button
+                        class="deleteButton"
+                        data-id="${gesto.id}">
+
+                        🗑️
+
+                    </button>
+
+                `;
+
+
+                gestureList.appendChild(
+                    card
+                );
+
+            }
+        );
+
+
+
+        // =================================
+        // TESTAR
+        // =================================
+
+
+        document
+            .querySelectorAll(
+                ".testGestureButton"
+            )
+            .forEach(
+                button => {
+
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            iniciarTeste(
+                                button.dataset.name
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+
+        // =================================
+        // EDITAR
+        // =================================
+
+
+        document
+            .querySelectorAll(
+                ".editGestureButton"
+            )
+            .forEach(
+                button => {
+
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            abrirEditor(
+                                button.dataset.id
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+
+        // =================================
+        // AÇÃO
+        // =================================
+
+
+        document
+            .querySelectorAll(
+                ".saveActionButton"
+            )
+            .forEach(
+                button => {
+
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+
+                            const nome =
+                                button.dataset.name;
+
+
+                            const select =
+                                document.querySelector(
+
+                                    `.actionSelect[data-name="${CSS.escape(nome)}"]`
+
+                                );
+
+
+                            if (!select) {
+
+                                return;
+
+                            }
+
+
+                            actions.bind(
+
+                                nome,
+
+                                select.value
+
+                            );
+
+
+                            recordStatus.textContent =
+
+                                `⚡ Ação salva para "${nome}"`;
+
+                        }
+                    );
+
+                }
+            );
+
+
+
+        // =================================
+        // EXCLUIR
+        // =================================
+
+
+        document
+            .querySelectorAll(
+                ".deleteButton"
+            )
+            .forEach(
+                button => {
+
+
+                    button.addEventListener(
+                        "click",
+                        async () => {
+
+
+                            const id =
+                                Number(
+                                    button.dataset.id
+                                );
+
+
+                            await storage.delete(
+                                id
+                            );
+
+
+                            await atualizarBiblioteca();
+
+
+                            await recognizer.load();
+
+                        }
+                    );
+
+                }
+            );
+
+    }
+
+
+    catch (erro) {
+
+
+        console.error(
+            erro
+        );
+
+
+        gestureList.innerHTML =
+            "<p>❌ Erro ao carregar gestos.</p>";
+
+    }
+
+}
+
+
+
+// =====================================
+// EXPORTAR
+// =====================================
+
+
+exportButton.addEventListener(
+    "click",
+    async () => {
+
+
+        try {
+
+
+            const gestos =
+                await storage.getAll();
+
+
+            if (
+                gestos.length === 0
+            ) {
+
+
+                alert(
+                    "Nenhum gesto para exportar."
+                );
+
+
+                return;
+
+            }
+
+
+            const pacote = {
+
+                format:
+                    "gesture-studio",
+
+                version:
+                    1,
+
+                exportedAt:
+                    new Date().toISOString(),
+
+                gestures:
+                    gestos,
+
+                actions:
+                    actions.bindings
+
+            };
+
+
+            const json =
+                JSON.stringify(
+                    pacote,
+                    null,
+                    2
+                );
+
+
+            const blob =
+                new Blob(
+                    [json],
+                    {
+                        type:
+                            "application/json"
+                    }
+                );
+
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href =
+                url;
+
+
+            link.download =
+                "gesture-studio.json";
+
+
+            link.click();
+
+
+            URL.revokeObjectURL(
+                url
+            );
+
+
+            recordStatus.textContent =
+                "📤 Projeto exportado!";
+
+        }
+
+
+        catch (erro) {
+
+
+            console.error(
+                erro
+            );
+
+
+            recordStatus.textContent =
+                "❌ Erro ao exportar.";
+
+        }
+
+    }
+);
+
+
+
+// =====================================
+// IMPORTAR
+// =====================================
+
+
+importButton.addEventListener(
+    "click",
+    () => {
+
+        importFile.click();
+
+    }
+);
+
+
+importFile.addEventListener(
+    "change",
+    async () => {
+
+
+        const file =
+            importFile.files[0];
+
+
+        if (!file) {
+
+            return;
+
+        }
+
+
+        try {
+
+
+            const texto =
+                await file.text();
+
+
+            const pacote =
+                JSON.parse(
+                    texto
+                );
+
+
+            if (
+                pacote.format !==
+                "gesture-studio"
+            ) {
+
+
+                throw new Error(
+                    "Arquivo incompatível."
+                );
+
+            }
+
+
+            if (
+                !Array.isArray(
+                    pacote.gestures
+                )
+            ) {
+
+
+                throw new Error(
+                    "Gestos inválidos."
+                );
+
+            }
+
+
+            let importados = 0;
+
+
+            for (
+                const gesto
+                of pacote.gestures
+            ) {
+
+
+                if (
+
+                    !gesto.name ||
+
+                    !Array.isArray(
+                        gesto.samples
+                    )
+
+                ) {
+
+                    continue;
+
+                }
+
+
+                await storage.save({
+
+                    name:
+                        gesto.name,
+
+                    samples:
+                        gesto.samples,
+
+                    createdAt:
+                        gesto.createdAt ||
+                        new Date().toISOString()
+
+                });
+
+
+                importados++;
+
+            }
+
+
+            if (
+                pacote.actions
+            ) {
+
+
+                actions.bindings =
+                    pacote.actions;
+
+
+                actions.save();
+
+            }
+
+
+            await atualizarBiblioteca();
+
+
+            await recognizer.load();
+
+
+            recordStatus.textContent =
+
+                `📥 ${importados} gesto(s) importado(s)!`;
+
+        }
+
+
+        catch (erro) {
+
+
+            console.error(
+                erro
+            );
+
+
+            recordStatus.textContent =
+                "❌ Arquivo inválido.";
+
+        }
+
+
+        importFile.value = "";
+
+    }
+);
+
+
+
+// =====================================
+// GRAVADOR
+// =====================================
+
+
+recorder.onSample =
+    (atual, total) => {
+
+
+        if (
+            adicionandoAmostras
+        ) {
+
+            return;
+
+        }
+
+
+        recordStatus.textContent =
+
+            `🔴 Gravando: ${atual}/${total}`;
+
+    };
+
+
+recorder.onFinished =
+    async (samples) => {
+
+
+        if (
+            adicionandoAmostras
+        ) {
+
+            return;
+
+        }
+
+
+        const nome =
+            gestureName.value.trim();
+
+
+        if (!nome) {
+
+
+            recordStatus.textContent =
+                "⚠️ Digite o nome.";
+
+
+            recordButton.textContent =
+                "🔴 Gravar gesto";
+
+
+            return;
+
+        }
+
+
+        try {
+
+
+            await storage.save({
+
+                name:
+                    nome,
+
+                samples:
+                    samples,
+
+                createdAt:
+                    new Date().toISOString()
+
+            });
+
+
+            recordStatus.textContent =
+
+                `💾 "${nome}" salvo com ${samples.length} amostras!`;
+
+
+            recordButton.textContent =
+                "🔴 Gravar gesto";
+
+
+            gestureName.value =
+                "";
+
+
+            await atualizarBiblioteca();
+
+
+            await recognizer.load();
+
+        }
+
+
+        catch (erro) {
+
+
+            console.error(
+                erro
+            );
+
+
+            recordStatus.textContent =
+                "❌ Erro ao salvar.";
+
+        }
+
+    };
+
+
+
+// =====================================
+// BOTÃO GRAVAR
+// =====================================
+
+
+recordButton.addEventListener(
+    "click",
+    () => {
+
+
+        if (
+            recorder.recording
+        ) {
+
+
+            recorder.stop();
+
+
+            recordButton.textContent =
+                "🔴 Gravar gesto";
+
+
+            return;
+
+        }
+
+
+        const nome =
+            gestureName.value.trim();
+
+
+        if (!nome) {
+
+
+            recordStatus.textContent =
+                "⚠️ Digite o nome.";
+
+
+            gestureName.focus();
+
+
+            return;
+
+        }
+
+
+        recorder.start();
+
+
+        recordButton.textContent =
+            "⏹️ Gravando...";
+
+
+        recordStatus.textContent =
+            "🔴 Faça o gesto...";
+
+    }
+);
+
+
+
+// =====================================
+// INICIALIZAÇÃO
+// =====================================
+
+
+async function iniciar() {
+
+
+    try {
+
+
+        status.textContent =
+            "💾 Iniciando banco...";
+
+
+        await storage.init();
+        console.log("✅ DEBUG: storage.init terminou");
+
+
+        await atualizarBiblioteca();
+
+
+        status.textContent =
+            "🧠 Carregando reconhecedor...";
+
+
+        await recognizer.load();
+
+
+        status.textContent =
+            "🧠 Carregando MediaPipe...";
+
+
+        await tracking.init();
+        console.log("✅ DEBUG: tracking.init terminou");
+
+
+        status.textContent =
+            "📷 Ligando câmera...";
+
+
+        await tracking.startCamera();
+
+
+        status.textContent =
+            "🖐️ Procurando mão...";
+
+    }
+
+
+    catch (erro) {
+
+
+        console.error(
+            "❌ ERRO:",
+            erro
+        );
+
+
+        status.textContent =
+            "❌ Erro: " +
+            erro.message;
+
+    }
+
+}
+
+
+iniciar();
+
+
+
+// =====================================
+// ABAS DO EDITOR
+// =====================================
+
+const editorTabs =
+    document.querySelectorAll(
+        ".editor-tab"
+    );
+
+const editorTabContents =
+    document.querySelectorAll(
+        ".editor-tab-content"
+    );
+
+editorTabs.forEach(
+    tab => {
+
+        tab.addEventListener(
+            "click",
+            () => {
+
+                const alvo =
+                    tab.dataset.tab;
+
+
+                editorTabs.forEach(
+                    outraTab => {
+
+                        outraTab.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                editorTabContents.forEach(
+                    conteudo => {
+
+                        conteudo.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                tab.classList.add(
+                    "active"
+                );
+
+
+                const elemento =
+                    document.getElementById(
+                        alvo
+                    );
+
+
+                if (elemento) {
+
+                    elemento.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+
+// =====================================
+// MODAL DA AMOSTRA
+// =====================================
+
+const sampleModal =
+    document.getElementById(
+        "sampleModal"
+    );
+
+const sampleModalClose =
+    document.getElementById(
+        "sampleModalClose"
+    );
+
+const sampleModalCanvas =
+    document.getElementById(
+        "sampleModalCanvas"
+    );
+
+const sampleModalTitle =
+    document.getElementById(
+        "sampleModalTitle"
+    );
+
+const sampleModalInfo =
+    document.getElementById(
+        "sampleModalInfo"
+    );
+
+
+
+/* ============================================================
+   ALL-IN — DADOS DO GESTO
+   ============================================================ */
+
+(function() {
+
+    function getStorage() {
+        if (
+            typeof storage !== "undefined" &&
+            storage
+        ) {
+            return storage;
+        }
+
+        return null;
+    }
+
+    async function saveGestureData(
+        gesture
+    ) {
+        const db =
+            getStorage();
+
+        if (!db) {
+            throw new Error(
+                "Storage não disponível."
+            );
+        }
+
+        if (
+            typeof db.saveGesture ===
+            "function"
+        ) {
+            await db.saveGesture(
+                gesture
+            );
+            return;
+        }
+
+        if (
+            typeof db.save ===
+            "function"
+        ) {
+            await db.save(
+                gesture
+            );
+            return;
+        }
+
+        throw new Error(
+            "Método de salvamento não encontrado."
+        );
+    }
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const botao =
+                event.target.closest(
+                    "#allinExportGesture"
+                );
+
+            if (!botao) return;
+
+            const gesto =
+                allinGetCurrentGesture();
+
+            if (!gesto) {
+                alert(
+                    "⚠️ Nenhum gesto está sendo editado."
+                );
+                return;
+            }
+
+            const nome =
+                gesto.name ||
+                gesto.nome ||
+                "gesto";
+
+            allinDownloadJSON(
+                `${nome}.json`,
+                gesto
+            );
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const botao =
+                event.target.closest(
+                    "#allinImportGesture"
+                );
+
+            if (!botao) return;
+
+            const input =
+                document.getElementById(
+                    "allinImportFile"
+                );
+
+            if (input) {
+                input.click();
+            }
+        }
+    );
+
+    document.addEventListener(
+        "change",
+        async event => {
+
+            const input =
+                event.target;
+
+            if (
+                input.id !==
+                "allinImportFile"
+            ) {
+                return;
+            }
+
+            const arquivo =
+                input.files &&
+                input.files[0];
+
+            if (!arquivo) return;
+
+            try {
+
+                const texto =
+                    await arquivo.text();
+
+                const gesto =
+                    JSON.parse(
+                        texto
+                    );
+
+                if (
+                    !gesto ||
+                    !Array.isArray(
+                        gesto.samples
+                    )
+                ) {
+                    throw new Error(
+                        "JSON não contém samples válidas."
+                    );
+                }
+
+                if (
+                    gesto.samples.length ===
+                    0
+                ) {
+                    throw new Error(
+                        "O gesto não possui amostras."
+                    );
+                }
+
+                gesto.name =
+                    gesto.name ||
+                    `Importado_${Date.now()}`;
+
+                await saveGestureData(
+                    gesto
+                );
+
+                alert(
+                    `✅ Gesto "${gesto.name}" importado.`
+                );
+
+                location.reload();
+
+            } catch (erro) {
+
+                console.error(
+                    "Importação ALL-IN:",
+                    erro
+                );
+
+                alert(
+                    "❌ Não foi possível importar o gesto.\n\n"
+                    + erro.message
+                );
+            }
+
+            input.value = "";
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        async event => {
+
+            const botao =
+                event.target.closest(
+                    "#allinDuplicateGesture"
+                );
+
+            if (!botao) return;
+
+            const gesto =
+                allinGetCurrentGesture();
+
+            if (!gesto) {
+                alert(
+                    "⚠️ Nenhum gesto está sendo editado."
+                );
+                return;
+            }
+
+            const copia =
+                JSON.parse(
+                    JSON.stringify(
+                        gesto
+                    )
+                );
+
+            const nomeOriginal =
+                copia.name ||
+                copia.nome ||
+                "Gesto";
+
+            const novoNome =
+                `${nomeOriginal}_copia`;
+
+            if (
+                "name" in copia ||
+                !("nome" in copia)
+            ) {
+                copia.name =
+                    novoNome;
+            } else {
+                copia.nome =
+                    novoNome;
+            }
+
+            try {
+
+                await saveGestureData(
+                    copia
+                );
+
+                alert(
+                    `🧬 Cópia criada: ${novoNome}`
+                );
+
+                location.reload();
+
+            } catch (erro) {
+
+                console.error(
+                    "Duplicação ALL-IN:",
+                    erro
+                );
+
+                alert(
+                    "❌ Erro ao duplicar:\n\n"
+                    + erro.message
+                );
+            }
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        async event => {
+
+            const botao =
+                event.target.closest(
+                    "#allinDeleteGesture"
+                );
+
+            if (!botao) return;
+
+            const gesto =
+                allinGetCurrentGesture();
+
+            if (!gesto) {
+                alert(
+                    "⚠️ Nenhum gesto está sendo editado."
+                );
+                return;
+            }
+
+            const nome =
+                gesto.name ||
+                gesto.nome ||
+                "este gesto";
+
+            const confirmar =
+                confirm(
+                    `⚠️ Excluir "${nome}"?\n\nEsta ação não pode ser desfeita.`
+                );
+
+            if (!confirmar) {
+                return;
+            }
+
+            const db =
+                getStorage();
+
+            try {
+
+                if (
+                    db &&
+                    typeof db.deleteGesture ===
+                    "function"
+                ) {
+                    await db.deleteGesture(
+                        nome
+                    );
+                } else if (
+                    db &&
+                    typeof db.delete ===
+                    "function"
+                ) {
+                    await db.delete(
+                        nome
+                    );
+                } else {
+                    throw new Error(
+                        "Método de exclusão não encontrado no storage."
+                    );
+                }
+
+                alert(
+                    `🗑️ "${nome}" excluído.`
+                );
+
+                location.reload();
+
+            } catch (erro) {
+
+                console.error(
+                    "Exclusão ALL-IN:",
+                    erro
+                );
+
+                alert(
+                    "❌ Não foi possível excluir:\n\n"
+                    + erro.message
+                );
+            }
+        }
+    );
+
+})();
+
+
+/* ============================================================
+   ALL-IN — DADOS DO GESTO
+   ============================================================ */
+
+(function() {
+
+    function getStorage() {
+        if (
+            typeof storage !== "undefined" &&
+            storage
+        ) {
+            return storage;
+        }
+
+        return null;
+    }
+
+    async function saveGestureData(
+        gesture
+    ) {
+        const db =
+            getStorage();
+
+        if (!db) {
+            throw new Error(
+                "Storage não disponível."
+            );
+        }
+
+        if (
+            typeof db.saveGesture ===
+            "function"
+        ) {
+            await db.saveGesture(
+                gesture
+            );
+            return;
+        }
+
+        if (
+            typeof db.save ===
+            "function"
+        ) {
+            await db.save(
+                gesture
+            );
+            return;
+        }
+
+        throw new Error(
+            "Método de salvamento não encontrado."
+        );
+    }
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const botao =
+                event.target.closest(
+                    "#allinExportGesture"
+                );
+
+            if (!botao) return;
+
+            const gesto =
+                allinGetCurrentGesture();
+
+            if (!gesto) {
+                alert(
+                    "⚠️ Nenhum gesto está sendo editado."
+                );
+                return;
+            }
+
+            const nome =
+                gesto.name ||
+                gesto.nome ||
+                "gesto";
+
+            allinDownloadJSON(
+                `${nome}.json`,
+                gesto
+            );
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const botao =
+                event.target.closest(
+                    "#allinImportGesture"
+                );
+
+            if (!botao) return;
+
+            const input =
+                document.getElementById(
+                    "allinImportFile"
+                );
+
+            if (input) {
+                input.click();
+            }
+        }
+    );
+
+    document.addEventListener(
+        "change",
+        async event => {
+
+            const input =
+                event.target;
+
+            if (
+                input.id !==
+                "allinImportFile"
+            ) {
+                return;
+            }
+
+            const arquivo =
+                input.files &&
+                input.files[0];
+
+            if (!arquivo) return;
+
+            try {
+
+                const texto =
+                    await arquivo.text();
+
+                const gesto =
+                    JSON.parse(
+                        texto
+                    );
+
+                if (
+                    !gesto ||
+                    !Array.isArray(
+                        gesto.samples
+                    )
+                ) {
+                    throw new Error(
+                        "JSON não contém samples válidas."
+                    );
+                }
+
+                if (
+                    gesto.samples.length ===
+                    0
+                ) {
+                    throw new Error(
+                        "O gesto não possui amostras."
+                    );
+                }
+
+                gesto.name =
+                    gesto.name ||
+                    `Importado_${Date.now()}`;
+
+                await saveGestureData(
+                    gesto
+                );
+
+                alert(
+                    `✅ Gesto "${gesto.name}" importado.`
+                );
+
+                location.reload();
+
+            } catch (erro) {
+
+                console.error(
+                    "Importação ALL-IN:",
+                    erro
+                );
+
+                alert(
+                    "❌ Não foi possível importar o gesto.\n\n"
+                    + erro.message
+                );
+            }
+
+            input.value = "";
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        async event => {
+
+            const botao =
+                event.target.closest(
+                    "#allinDuplicateGesture"
+                );
+
+            if (!botao) return;
+
+            const gesto =
+                allinGetCurrentGesture();
+
+            if (!gesto) {
+                alert(
+                    "⚠️ Nenhum gesto está sendo editado."
+                );
+                return;
+            }
+
+            const copia =
+                JSON.parse(
+                    JSON.stringify(
+                        gesto
+                    )
+                );
+
+            const nomeOriginal =
+                copia.name ||
+                copia.nome ||
+                "Gesto";
+
+            const novoNome =
+                `${nomeOriginal}_copia`;
+
+            if (
+                "name" in copia ||
+                !("nome" in copia)
+            ) {
+                copia.name =
+                    novoNome;
+            } else {
+                copia.nome =
+                    novoNome;
+            }
+
+            try {
+
+                await saveGestureData(
+                    copia
+                );
+
+                alert(
+                    `🧬 Cópia criada: ${novoNome}`
+                );
+
+                location.reload();
+
+            } catch (erro) {
+
+                console.error(
+                    "Duplicação ALL-IN:",
+                    erro
+                );
+
+                alert(
+                    "❌ Erro ao duplicar:\n\n"
+                    + erro.message
+                );
+            }
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        async event => {
+
+            const botao =
+                event.target.closest(
+                    "#allinDeleteGesture"
+                );
+
+            if (!botao) return;
+
+            const gesto =
+                allinGetCurrentGesture();
+
+            if (!gesto) {
+                alert(
+                    "⚠️ Nenhum gesto está sendo editado."
+                );
+                return;
+            }
+
+            const nome =
+                gesto.name ||
+                gesto.nome ||
+                "este gesto";
+
+            const confirmar =
+                confirm(
+                    `⚠️ Excluir "${nome}"?\n\nEsta ação não pode ser desfeita.`
+                );
+
+            if (!confirmar) {
+                return;
+            }
+
+            const db =
+                getStorage();
+
+            try {
+
+                if (
+                    db &&
+                    typeof db.deleteGesture ===
+                    "function"
+                ) {
+                    await db.deleteGesture(
+                        nome
+                    );
+                } else if (
+                    db &&
+                    typeof db.delete ===
+                    "function"
+                ) {
+                    await db.delete(
+                        nome
+                    );
+                } else {
+                    throw new Error(
+                        "Método de exclusão não encontrado no storage."
+                    );
+                }
+
+                alert(
+                    `🗑️ "${nome}" excluído.`
+                );
+
+                location.reload();
+
+            } catch (erro) {
+
+                console.error(
+                    "Exclusão ALL-IN:",
+                    erro
+                );
+
+                alert(
+                    "❌ Não foi possível excluir:\n\n"
+                    + erro.message
+                );
+            }
+        }
+    );
+
+})();
+
+window.abrirModalAmostra = function() {
+
+    const canvas =
+        document.getElementById(
+            "sampleCanvas"
+        );
+
+    if (
+        !canvas ||
+        !sampleModal ||
+        !sampleModalCanvas
+    ) {
+        return;
+    }
+
+    sampleModalTitle.textContent =
+        "🔬 MODO DIAGNÓSTICO — AMOSTRA";
+
+    if (sampleDetails) {
+
+        const clone =
+            sampleDetails.cloneNode(true);
+
+        const canvasOriginal =
+            clone.querySelector(
+                "#sampleCanvas"
+            );
+
+        if (canvasOriginal) {
+            canvasOriginal.remove();
+        }
+
+        const botoes =
+            clone.querySelectorAll(
+                "button"
+            );
+
+        botoes.forEach(
+            botao => botao.remove()
+        );
+
+        sampleModalInfo.innerHTML =
+            clone.innerHTML;
+    }
+
+    const ctx =
+        sampleModalCanvas.getContext(
+            "2d"
+        );
+
+    sampleModalCanvas.width =
+        canvas.width;
+
+    sampleModalCanvas.height =
+        canvas.height;
+
+    ctx.clearRect(
+        0,
+        0,
+        sampleModalCanvas.width,
+        sampleModalCanvas.height
+    );
+
+    ctx.drawImage(
+        canvas,
+        0,
+        0
+    );
+
+    sampleModal.classList.add(
+        "active"
+    );
+};;
+
+function fecharModalAmostra() {
+
+    if (!sampleModal) {
+
+        return;
+
+    }
+
+    sampleModal.classList.remove(
+        "active"
+    );
+
+    const canvas =
+        document.getElementById(
+            "sampleCanvas"
+        );
+
+    if (canvas) {
+        const ctx =
+            canvas.getContext("2d");
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+    }
+
+}
+
+
+if (sampleModalClose) {
+
+    sampleModalClose.addEventListener(
+        "click",
+        fecharModalAmostra
+    );
+
+}
+
+
+if (sampleModal) {
+
+    sampleModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                sampleModal
+            ) {
+
+                fecharModalAmostra();
+
+            }
+
+        }
+    );
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            fecharModalAmostra();
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   ALL-IN UPGRADE — UTILITÁRIOS
+   ============================================================ */
+
+(function() {
+
+    function allinGetCurrentGesture() {
+        if (
+            typeof gestoEditando !== "undefined" &&
+            gestoEditando
+        ) {
+            return gestoEditando;
+        }
+
+        return null;
+    }
+
+    function allinAnalyzeGesture(gesture) {
+        if (
+            !gesture ||
+            !Array.isArray(gesture.samples) ||
+            !gesture.samples.length
+        ) {
+            return null;
+        }
+
+        try {
+            return quality.analyze(
+                gesture.samples
+            );
+        } catch (erro) {
+            console.error(
+                "ALL-IN análise:",
+                erro
+            );
+            return null;
+        }
+    }
+
+    function allinClassification(distance) {
+        if (distance > 0.20) {
+            return "🔴 Suspeita";
+        }
+
+        if (distance > 0.12) {
+            return "🟡 Diferente";
+        }
+
+        return "🟢 Boa";
+    }
+
+    function allinFingerName(index) {
+        if (index === 0) return "🖐️ Pulso";
+
+        if (index >= 1 && index <= 4) {
+            return "👍 Polegar";
+        }
+
+        if (index >= 5 && index <= 8) {
+            return "☝️ Indicador";
+        }
+
+        if (index >= 9 && index <= 12) {
+            return "🖕 Médio";
+        }
+
+        if (index >= 13 && index <= 16) {
+            return "💍 Anelar";
+        }
+
+        if (index >= 17 && index <= 20) {
+            return "🤏 Mínimo";
+        }
+
+        return "🖐️ Desconhecido";
+    }
+
+    function allinDownloadJSON(
+        filename,
+        data
+    ) {
+        const blob =
+            new Blob(
+                [
+                    JSON.stringify(
+                        data,
+                        null,
+                        2
+                    )
+                ],
+                {
+                    type:
+                        "application/json"
+                }
+            );
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+        const a =
+            document.createElement(
+                "a"
+            );
+
+        a.href = url;
+        a.download = filename;
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        setTimeout(
+            () =>
+                URL.revokeObjectURL(
+                    url
+                ),
+            1000
+        );
+    }
+
+    window.allinAnalyzeGesture =
+        allinAnalyzeGesture;
+
+    window.allinClassification =
+        allinClassification;
+
+    window.allinFingerName =
+        allinFingerName;
+
+    window.allinDownloadJSON =
+        allinDownloadJSON;
+
+})();
+
+
+</script>
+
+
+</body>
+
+</html>
